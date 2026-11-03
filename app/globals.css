@@ -1,0 +1,144 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  min-width: 0;
+  padding: 30px;
+}
+
+.navbar {
+  width: 250px;
+  min-height: 100vh;
+  background-color: #300d19;
+  color: white;
+  padding: 25px 15px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .navbar {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .app-content {
+    padding: 20px;
+  }
+}
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-logo {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.navbar-logo h2 {
+  font-size: 25px;
+  font-weight: bold;
+  color: white;
+}
+
+.navbar-logo p {
+  color: #b8a0a6;
+  font-size: 13px;
+}
+
+.navbar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.navbar-link {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 15px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.navbar-link:hover {
+  background-color: #622436;
+  color: white;
+}
+
+.navbar-footer {
+  margin-top: auto;
+  text-align: center;
+  color: #b8a0a6;
+  font-size: 12px;
+}
+.dashboard-boas-vindas {
+  background-color: #ffffff;
+  padding: 45px;
+  border-radius: 12px;
+  border-left: 5px solid #621c32;
+}
+
+.dashboard-boas-vindas h1 {
+  font-weight: bold;
+  color: #21151a;
+}
+
+.dashboard-boas-vindas p {
+  color: #666;
+  margin-top: 15px;
+}
+
+.dashboard-card {
+  border: none;
+  border-radius: 12px;
+  min-height: 250px;
+  height: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+}
+
+.dashboard-card .card-body {
+  padding: 25px;
+}
+
+.dashboard-card h5 {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.dashboard-card p {
+  color: #777;
+  min-height: 50px;
+}
+
+.dashboard-card .btn-primary {
+  background-color: #621c32;
+  border-color: #621c32;
+}
+
+.dashboard-card .btn-primary:hover {
+  background-color: #411120;
+  border-color: #411120;
+}
