@@ -1,13 +1,17 @@
 
 "use client";
 
+// Lista de Veículos 
+
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import GaleriaVeiculos from "@/components/GaleriaVeiculos";
 
 export default function Veiculos() {
   const [veiculos, setVeiculos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
+  const [busca, setBusca] = useState("");
 
   useEffect(() => {
     async function buscarVeiculos() {
@@ -46,53 +50,114 @@ export default function Veiculos() {
         throw new Error("Erro ao excluir veículo");
       }
 
-      setVeiculos((listaAtual) =>
-        listaAtual.filter((veiculo) => veiculo.id !== id)
+      setVeiculos((lista) =>
+        lista.filter((veiculo) => veiculo.id !== id)
       );
-
     } catch (erro) {
       setErro(erro.message);
     }
   }
 
+  const veiculosFiltrados = veiculos.filter((veiculo) => {
+    const nome = `${veiculo.marca} ${veiculo.modelo}`.toLowerCase();
+
+    return nome.includes(busca.toLowerCase());
+  });
+
   return (
     <div className="container-fluid">
-      <h1>Estoque de Veículos</h1>
-      <p>Veículos cadastrados no AutoManager.</p>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1>Estoque de Veículos</h1>
+          <p className="text-muted">
+            Gerencie os veículos cadastrados no AutoManager.
+          </p>
+        </div>
+
+        <Link href="/cadastrar" className="btn btn-primary">
+          + Cadastrar Veículo
+        </Link>
+      </div>
+
+      <div className="card border-0 shadow-sm mb-4">
+        <div className="card-body">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Pesquisar por marca ou modelo..."
+            value={busca}
+            onChange={(evento) => setBusca(evento.target.value)}
+          />
+        </div>
+      </div>
 
       {carregando && <p>Carregando veículos...</p>}
 
       {erro && (
-        <div className="alert alert-danger">
-          {erro}
-        </div>
+        <div className="alert alert-danger">{erro}</div>
       )}
 
       {!carregando && !erro && (
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <table className="table table-hover">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Marca</th>
-                  <th>Modelo</th>
-                  <th>Ano</th>
-                  <th>Placa</th>
-                  <th>Preço</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
+        <>
+          <p className="text-muted">
+            {veiculosFiltrados.length} veículos encontrados
+          </p>
 
-              <tbody>
-                {veiculos.map((veiculo) => (
-                  <tr key={veiculo.id}>
-                    <td>{veiculo.id}</td>
-                    <td>{veiculo.marca}</td>
-                    <td>{veiculo.modelo}</td>
-                    <td>{veiculo.ano}</td>
-                    <td>{veiculo.placa}</td>
-                    <td>
+          <div className="row g-4">
+            {veiculosFiltrados.map((veiculo) => (
+              <div
+                className="col-md-6 col-xl-4"
+                key={veiculo.id}
+              >
+                <div className="card carro-card h-100">
+                  <GaleriaVeiculos
+                    imagens={veiculo.imagens}
+                    nome={`${veiculo.marca} ${veiculo.modelo}`}
+                  />
+
+                  <div className="card-body">
+                    <small className="carro-marca">
+                      {veiculo.marca}
+                    </small>
+
+                    <Link
+                      href={`/veiculos/${veiculo.id}/detalhes`}
+                      className="text-decoration-none"
+                    >
+                      <h5 className="carro-modelo">
+                        {veiculo.modelo}
+                      </h5>
+                    </Link>
+
+                    <div className="mb-2">
+                      <span
+                        className={`veiculo-status ${veiculo.status === "Disponível"
+                          ? "status-disponivel"
+                          : veiculo.status === "Reservado"
+                            ? "status-reservado"
+                            : veiculo.status === "Vendido"
+                              ? "status-vendido"
+                              : "status-desconhecido"
+                          }`}
+                      >
+                        {veiculo.status || "Status não informado"}
+                      </span>
+                    </div>
+
+                    <p className="carro-detalhes">
+                      📅 {veiculo.ano}
+                      <span className="ms-3">
+                        🚘 {veiculo.placa}
+                      </span>
+                    </p>
+
+                    <hr />
+
+                    <small className="text-muted">
+                      Preço de venda
+                    </small>
+
+                    <h4 className="carro-preco">
                       {Number(veiculo.preco).toLocaleString(
                         "pt-BR",
                         {
@@ -100,38 +165,44 @@ export default function Veiculos() {
                           currency: "BRL",
                         }
                       )}
-                    </td>
+                    </h4>
 
-                    <td>
-                      <div className="d-flex gap-2">
-                        <Link
-                          href={`/veiculos/${veiculo.id}`}
-                          className="btn btn-warning btn-sm"
-                        >
-                          Editar
-                        </Link>
+                    <Link
+                      href={`/veiculos/${veiculo.id}/detalhes`}
+                      className="btn btn-outline-secondary flex-fill"
+                    >
+                      Detalhes
+                    </Link>
 
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() => excluirVeiculo(veiculo.id)}
-                        >
-                          Excluir
-                        </button>
-                      </div>
-                    </td>
+                    <div className="d-flex gap-2 mt-3">
+                      <Link
+                        href={`/veiculos/${veiculo.id}`}
+                        className="btn btn-warning flex-fill"
+                      >
+                        Editar
+                      </Link>
 
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {veiculos.length === 0 && (
-              <p className="text-center">
-                Nenhum veículo cadastrado.
-              </p>
-            )}
+                      <button
+                        className="btn btn-danger flex-fill"
+                        onClick={() =>
+                          excluirVeiculo(veiculo.id)
+                        }
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+
+          {veiculosFiltrados.length === 0 && (
+            <p className="text-center mt-4">
+              Nenhum veículo encontrado.
+            </p>
+          )}
+        </>
       )}
     </div>
   );

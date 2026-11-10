@@ -1,15 +1,28 @@
 import Link from "next/link";
+import DashboardEstatisticas from "@/components/DashboardEstatisticas";
 
 export default function Home() {
   return (
     <div>
       <div className="dashboard-boas-vindas">
-        <h1>Olá, Administrador!</h1>
-        <p>
-          Bem-vindo ao AutoManager. Aqui você pode
-          gerenciar os veículos da sua revenda.
-        </p>
+        <div className="banner-conteudo">
+          <h1>Olá, Administrador!</h1>
+
+          <p>
+            Bem-vindo ao AutoManager. Aqui você pode
+            gerenciar os veículos da sua revenda
+            de forma simples e prática.
+          </p>
+
+          <div className="banner-linha"></div>
+        </div>
+
+        <div className="banner-imagem">
+          <div className="banner-faixa"></div>
+        </div>
       </div>
+
+      <DashboardEstatisticas />
 
       <div className="row g-4 mt-4">
         <div className="col-md-6 col-xl-3">

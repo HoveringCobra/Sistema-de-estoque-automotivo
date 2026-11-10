@@ -1,6 +1,9 @@
 
 import pool from "@/lib/db";
 
+
+// Funcao de Deletar
+
 export async function DELETE(request, { params }) {
   try {
     const { id } = await params;
@@ -29,30 +32,96 @@ export async function DELETE(request, { params }) {
   }
 }
 
+// Funcao de Editar top
 
 export async function PUT(request, { params }) {
   try {
     const { id } = await params;
-    const { marca, modelo, ano, placa, preco } =
-      await request.json();
+
+    const {
+      marca,
+      modelo,
+      ano,
+      placa,
+      preco,
+      quilometragem,
+      motorizacao,
+      combustivel,
+      cambio,
+      cor,
+      potencia,
+      descricao,
+    } = await request.json();
 
     if (!marca || !modelo || !ano || !placa || !preco) {
       return Response.json(
-        { erro: "Preencha todos os campos" },
+        { erro: "Preencha os campos obrigatórios" },
+        { status: 400 }
+      );
+    }
+
+    const km =
+      quilometragem === "" ||
+      quilometragem === null ||
+      quilometragem === undefined
+        ? null
+        : Number(quilometragem);
+
+    const cv =
+      potencia === "" ||
+      potencia === null ||
+      potencia === undefined
+        ? null
+        : Number(potencia);
+
+    if (
+      (km !== null &&
+        (!Number.isInteger(km) || km < 0)) ||
+      (cv !== null &&
+        (!Number.isInteger(cv) || cv < 0))
+    ) {
+      return Response.json(
+        {
+          erro: "Quilometragem e potência devem ser números inteiros válidos.",
+        },
         { status: 400 }
       );
     }
 
     const resultado = await pool.query(
-      `UPDATE veiculos
-       SET marca = $1,
-           modelo = $2,
-           ano = $3,
-           placa = $4,
-           preco = $5
-       WHERE id = $6
-       RETURNING *`,
-      [marca, modelo, ano, placa, preco, id]
+      `
+      UPDATE veiculos
+      SET
+        marca = $1,
+        modelo = $2,
+        ano = $3,
+        placa = $4,
+        preco = $5,
+        quilometragem = $6,
+        motorizacao = $7,
+        combustivel = $8,
+        cambio = $9,
+        cor = $10,
+        potencia = $11,
+        descricao = $12
+      WHERE id = $13
+      RETURNING *
+      `,
+      [
+        marca,
+        modelo,
+        ano,
+        placa.trim().toUpperCase(),
+        preco,
+        km,
+        motorizacao || null,
+        combustivel || null,
+        cambio || null,
+        cor || null,
+        cv,
+        descricao || null,
+        id,
+      ]
     );
 
     if (resultado.rowCount === 0) {
